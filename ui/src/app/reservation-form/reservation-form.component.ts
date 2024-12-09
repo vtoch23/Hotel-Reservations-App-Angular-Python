@@ -46,15 +46,17 @@ export class ReservationFormComponent implements OnInit{
       if(id){
         this.reservationService.updateReservation(id, reservation).subscribe(() => {
           console.log('updated')
+          this.router.navigate(['/list'])
         });
         
       } else {
         this.reservationService.addReservation(reservation).subscribe(() => {
           console.log('added')
+          this.router.navigate(['/list'])
         })
       }
 
-      this.router.navigate(['/list'])
+      
     }
   }
 

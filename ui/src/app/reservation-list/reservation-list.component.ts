@@ -23,6 +23,7 @@ export class ReservationListComponent implements OnInit {
   deleteReservation(id: string){
     this.reservationService.deleteReservation(id).subscribe(() => {
       console.log('deleted')
+      this.router.navigate(['/'])
     });
   }
 

@@ -40,7 +40,6 @@ export class ReservationService {
       body: {'id': id}
     };
     return this.http.delete<void>(this.apiUrl+'/delete_reservation/'+id, httpOptions);
-
   }
 
   updateReservation(id: string, reservation: Reservation): Observable<void> {
