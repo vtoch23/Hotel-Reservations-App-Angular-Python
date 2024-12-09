@@ -7,6 +7,7 @@ import { HomeModule } from './home/home.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { CommonModule } from '@angular/common';
     BrowserModule,
     CommonModule,
     HomeModule,
+    HttpClientModule,
     ReservationModule,
   ],
   providers: [

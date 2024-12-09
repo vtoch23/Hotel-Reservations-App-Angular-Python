@@ -62,7 +62,9 @@ def update_reservation(id, guestName: str =  Form(), guestEmail: str = Form(), c
 
 @app.delete("/delete_reservation/{id}")
 def delete_reservation(id):
+    print(id)
     cursor = conn.cursor()
     cursor.execute("delete from guests where id=%s", (id, ))
     conn.commit()
-    return "Reservation Deleted Successfully"
+    records = cursor.fetchall()
+    return records

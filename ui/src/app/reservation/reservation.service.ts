@@ -1,43 +1,56 @@
 import { Injectable } from '@angular/core';
 import { Reservation } from '../models/reservation';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
-  private reservations: Reservation [] = [];
+  private apiUrl = "http://127.0.0.1:8000";
 
-  constructor(){
-    let savedReservations = localStorage.getItem('reservations');
-    this.reservations = savedReservations? JSON.parse(savedReservations): [];
-  }
+  constructor(private http: HttpClient){}
 
   //CRUD
 
-  getReservations(): Reservation[] {
-    return this.reservations;
+  getReservations(): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(this.apiUrl + '/');
   }
 
-  getReservation(id: string): Reservation | undefined {
-    return this.reservations.find(res => res.id === id);
+  getReservation(id: string): Observable<Reservation> {
+    return this.http.get<Reservation>(this.apiUrl+'/get_reservation/'+id);
   }
 
-  addReservation(reservation: Reservation): void {
-    reservation.id = Date.now().toString();
-    this.reservations.push(reservation);
-    localStorage.setItem('reservations', JSON.stringify(this.reservations))
+  addReservation(reservation: Reservation): Observable<void> {
+    let body = new FormData();
+    body.append('guestName', reservation.guestName);
+    body.append('guestEmail', reservation.guestEmail);
+    body.append('checkInDate', JSON.stringify(reservation.checkInDate));
+    body.append('checkOutDate', JSON.stringify(reservation.checkOutDate));
+    body.append('roomNumber', JSON.stringify(reservation.roomNumber));
+    body.append('icon', reservation.icon);
+    return this.http.post<void>(this.apiUrl+'/add_reservation', body);
   }
 
-  deleteReservation(id: string): void {
-    let index = this.reservations.findIndex(res => res.id === id);
-    this.reservations.splice(index, 1);
-    localStorage.setItem('reservations', JSON.stringify(this.reservations))
+  deleteReservation(id: string): Observable<void> {
+    const httpOptions = {
+      headers: new HttpHeaders({ 
+        'Access-Control-Allow-Origin': '*',
+      }),
+      body: {'id': id}
+    };
+    return this.http.delete<void>(this.apiUrl+'/delete_reservation/'+id, httpOptions);
+
   }
 
-  updateReservation(id: string, updatedReservation: Reservation): void {
-    let index = this.reservations.findIndex(res => res.id === id);
-    updatedReservation.id = id;
-    this.reservations[index] = updatedReservation;
-    localStorage.setItem('reservations', JSON.stringify(this.reservations))
+  updateReservation(id: string, reservation: Reservation): Observable<void> {
+    let body = new FormData();
+    body.append('guestName', reservation.guestName);
+    body.append('guestEmail', reservation.guestEmail);
+    body.append('checkInDate', JSON.stringify(reservation.checkInDate));
+    body.append('checkOutDate', JSON.stringify(reservation.checkOutDate));
+    body.append('roomNumber', JSON.stringify(reservation.roomNumber));
+    body.append('icon', reservation.icon);
+    return this.http.put<void>(this.apiUrl+'/update_reservation/'+id, body);
   } 
 }
